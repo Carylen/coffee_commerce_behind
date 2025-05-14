@@ -25,13 +25,16 @@ app.post('/insert-token', async(req, res) => {
         return res.status(400).json({ error: 'Missing token_type or token_usage' });
     }
 
+    
     if (token_type.trim().toLowerCase() == 'input_token') {
         // For calculate the input_token
-        cost = (token_usage / 1000000 * (16520 * 0.075), 2).toFixed(2)
+        cost = (token_usage / 1000000 * 16520 * 0.075).toFixed(2)
+        console.log(`Token Type : ${token_type}\nToken Usage : ${token_usage}\nCost : ${cost}`)
     }
     else{
         // For calculate the output_token
-        cost = (token_usage / 1000000 * (16520 * 0.30), 2).toFixed(2)
+        cost = (token_usage / 1000000 * 16520 * 0.30).toFixed(2)
+        console.log(`Token Type : ${token_type}\nToken Usage : ${token_usage}\nCost : ${cost}`)
     }
     try {
         const result = await sql`
