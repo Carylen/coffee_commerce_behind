@@ -1,20 +1,51 @@
 import express from 'express'
 import cors from 'cors'
 import sql from './src/db_helper/neon_utils.js'
+import CustomParseFormat from 'dayjs/plugin/customParseFormat.js'
+import dayjs from 'dayjs';
+// import { custom } from 'dayjs/plugin/customParseFormat'
 
 const app = express();
 app.use(cors());
 app.use(express.json());
+dayjs.extend(CustomParseFormat)
 
 const table_name = process.env.TABLE_TOKEN
 
 // Simple route
-app.get('/', async (req, res) => {
-    // const rows = await sql.query('SELECT *  FROM users WHERE user_id = ANY($1)', [[1, 2]])
+app.get('/', async(req, res) => {
+    res.status(200).json({'messages': 'Hi from Bekasi!'})
+})
+
+app.get('/get-all-history', async(req, res) => {
     const rows = await sql`SELECT * FROM ${sql.unsafe(table_name)}`;
-    // const user_name = rows.map((e) => (e.user_name))
     console.log(rows)
-    res.send(rows);
+    res.status(200).send(rows);
+});
+
+app.post('/get-today-cost', async(req, res) => {
+    const { date_usage } = req.body;
+
+    if(!date_usage || date_usage.trim() == '') {
+        res.status(400).json({ messages : '{date_usage} cannot be empty'})
+    }
+    else if(dayjs(date_usage, "YYYY-MM-DD", true).isValid() == false) {
+        res.status(400).json({ messages : "please use right format 'YYYY-MM-DD'" })
+    }
+
+    const result = await sql`SELECT 
+                                DATE(created_on) AS date_used,
+                                SUM(token_usage) AS total_token,
+                                SUM(total_cost) AS total_cost
+                            FROM
+                                ${sql.unsafe(table_name)}
+                            WHERE
+                                DATE(created_on) = ${date_usage}
+                            GROUP BY
+                                date_used;`
+
+    console.log(result)
+    res.status(200).json(result);
 });
 
 app.post('/insert-token', async(req, res) => {
@@ -22,7 +53,7 @@ app.post('/insert-token', async(req, res) => {
     let cost = 0
     
     if (!token_type || !token_usage) {
-        return res.status(400).json({ error: 'Missing token_type or token_usage' });
+        res.status(400).json({ error: 'Missing token_type or token_usage' });
     }
 
     
