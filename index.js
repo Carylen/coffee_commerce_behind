@@ -2,8 +2,8 @@ import express from 'express'
 import cors from 'cors'
 import sql from './src/db_helper/neon_utils.js'
 import CustomParseFormat from 'dayjs/plugin/customParseFormat.js'
-import dayjs from 'dayjs';
-// import { custom } from 'dayjs/plugin/customParseFormat'
+import dayjs from 'dayjs'
+import token_helper from './src/token_manager/tokenRepository.js'
 
 const app = express();
 app.use(cors());
@@ -18,9 +18,13 @@ app.get('/', async(req, res) => {
 })
 
 app.get('/get-all-history', async(req, res) => {
-    const rows = await sql`SELECT * FROM ${sql.unsafe(table_name)}`;
-    console.log(rows)
-    res.status(200).send(rows);
+    const result = await token_helper.historyToken()
+    if(result.message) {
+        console.error(result.message)
+        return res.status(404).json({ message : result.message })
+    }
+    console.log(result)
+    res.status(200).json(result);
 });
 
 app.post('/get-today-cost', async(req, res) => {
@@ -32,18 +36,11 @@ app.post('/get-today-cost', async(req, res) => {
     else if(dayjs(date_usage, "YYYY-MM-DD", true).isValid() == false) {
         res.status(400).json({ messages : "please use right format 'YYYY-MM-DD'" })
     }
-
-    const result = await sql`SELECT 
-                                DATE(created_on) AS date_used,
-                                SUM(token_usage) AS total_token,
-                                SUM(total_cost) AS total_cost
-                            FROM
-                                ${sql.unsafe(table_name)}
-                            WHERE
-                                DATE(created_on) = ${date_usage}
-                            GROUP BY
-                                date_used;`
-
+    const result = await token_helper.costToken(date_usage)
+    if(result.message) {
+        console.error(result.message)
+        return res.status(404).json({ message : result.message })
+    }
     console.log(result)
     res.status(200).json(result);
 });
