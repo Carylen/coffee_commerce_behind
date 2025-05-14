@@ -1,4 +1,4 @@
-import sql from './src/db_helper/neon_utils.js'
+import sql from '../db_helper/neon_utils.js'
 // import CustomParseFormat from 'dayjs/plugin/customParseFormat.js'
 
 const table_name = process.env.TABLE_TOKEN
