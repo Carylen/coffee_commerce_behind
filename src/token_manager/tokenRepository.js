@@ -17,6 +17,7 @@ const historyToken = async() => {
 
 const costToken = async(date_usage) =>{
     console.log(date_usage)
+    
     try {
         const result = await sql`
                             SELECT 
@@ -38,7 +39,19 @@ const costToken = async(date_usage) =>{
     }
 }
 
-const insertHistoryToken = async(token_type, token_usage, cost) => {
+const insertHistoryToken = async(token_type, token_usage) => {
+    let cost = 0
+
+    if (token_type.trim().toLowerCase() == 'input_token') {
+        // For calculate the input_token
+        cost = (token_usage / 1000000 * 16520 * 0.075).toFixed(2)
+    }
+    else{
+        // For calculate the output_token
+        cost = (token_usage / 1000000 * 16520 * 0.30).toFixed(2)
+    }
+    console.log(`Token Type : ${token_type}\nToken Usage : ${token_usage}\nCost : ${cost}`)
+
     try {
         const result = await sql`
                                 INSERT INTO ${sql.unsafe(table_name)} (token_type, token_usage, total_cost)
