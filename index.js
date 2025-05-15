@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import sql from './src/db_helper/neon_utils.js'
-import tokenRoutoer from './src/token_manager/tokenController.js'
+import tokenRouter from './src/token_manager/tokenController.js'
 
 const app = express();
 app.use(cors());
@@ -15,11 +15,11 @@ app.get('/', async(req, res) => {
     res.status(200).json({'messages': 'Hi from Bekasi!'})
 })
 
-app.use("/tokenize", tokenRoutoer)
+app.use("/tokenize", tokenRouter)
 
 // Start server
 const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Table Name : ${table_name}`)
-  console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });
