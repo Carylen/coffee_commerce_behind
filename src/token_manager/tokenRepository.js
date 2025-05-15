@@ -16,8 +16,10 @@ const historyToken = async() => {
 }
 
 const costToken = async(date_usage) =>{
+    console.log(date_usage)
     try {
-        const result = await sql`SELECT 
+        const result = await sql`
+                            SELECT 
                                 DATE(created_on) AS date_used,
                                 SUM(token_usage) AS total_token,
                                 SUM(total_cost) AS total_cost
@@ -36,5 +38,21 @@ const costToken = async(date_usage) =>{
     }
 }
 
+const insertHistoryToken = async(token_type, token_usage, cost) => {
+    try {
+        const result = await sql`
+                                INSERT INTO ${sql.unsafe(table_name)} (token_type, token_usage, total_cost)
+                                VALUES (${token_type}, ${token_usage}, ${cost})
+                                RETURNING *;`
+        if(!result) {
+            throw new Error("The Request Body cannot be empty..."); 
+        }
+        return result
+    } catch (error) {
+        console.log(`Error : ${error.message}`)
+        throw new Error({ errorMessage : error.message });
+    }
+}
 
-export default { historyToken, costToken }
+
+export default { historyToken, costToken, insertHistoryToken }
