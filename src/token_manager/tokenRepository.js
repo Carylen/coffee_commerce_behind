@@ -16,7 +16,6 @@ const historyToken = async() => {
 }
 
 const costToken = async(date_usage) =>{
-    console.log(date_usage)
     
     try {
         const result = await sql`
@@ -50,7 +49,7 @@ const insertHistoryToken = async(token_type, token_usage) => {
         // For calculate the output_token
         cost = (token_usage / 1000000 * 16520 * 0.30).toFixed(2)
     }
-    console.log(`Token Type : ${token_type}\nToken Usage : ${token_usage}\nCost : ${cost}`)
+    // console.log(`Token Type : ${token_type}\nToken Usage : ${token_usage}\nCost : ${cost}`)
 
     try {
         const result = await sql`
