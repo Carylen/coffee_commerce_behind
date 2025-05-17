@@ -1,10 +1,9 @@
 import express from 'express'
 import CustomParseFormat from 'dayjs/plugin/customParseFormat.js'
-import { uploadHistoryToken, checkHistoryToken } from './tokenValidator.js'
 import tokenHelper from './tokenRepository.js'
 import dayjs from 'dayjs'
+import { uploadHistoryToken, checkHistoryToken } from './tokenValidator.js'
 import { validationResult } from 'express-validator'
-import chalk from 'chalk'
 import { logPrettier } from '../log_helper/logHistory.js'
 
 const router = express.Router()

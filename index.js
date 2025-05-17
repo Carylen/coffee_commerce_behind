@@ -3,6 +3,7 @@ import cors from 'cors'
 import sql from './src/db_helper/neon_utils.js'
 import tokenRouter from './src/token_manager/tokenController.js'
 import requestID from 'express-request-id'
+import jwt from 'jsonwebtoken'
 
 const app = express();
 app.use(cors());
@@ -25,8 +26,10 @@ app.get('/', async(req, res) => {
 app.use("/tokenize", tokenRouter)
 
 // Start server
-const PORT = 3000;
-app.listen(PORT, () => {
+
+app.listen( () => {
     console.log(`Table Name : ${table_name}`)
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${process.env.PORT}`);
+    // console.log(`JWT_SECRET_KEY: ${process.env.JWT_SECRET_KEY}`)
 });
+

@@ -29,4 +29,4 @@ const checkHistoryToken = [
         })
 ]
 
-export {uploadHistoryToken, checkHistoryToken}
+export { uploadHistoryToken, checkHistoryToken }
