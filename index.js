@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import sql from './src/db_helper/neon_utils.js'
 import tokenRouter from './src/token_manager/tokenController.js'
+import userRouter from './src/users/userController.js'
 import requestID from 'express-request-id'
 import jwt from 'jsonwebtoken'
 
@@ -24,6 +25,7 @@ app.get('/', async(req, res) => {
 })
 
 app.use("/tokenize", tokenRouter)
+app.use("/user", userRouter)
 
 // Start server
 
