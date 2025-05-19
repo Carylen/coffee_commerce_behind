@@ -11,13 +11,14 @@ dayjs.extend(CustomParseFormat)
 
 
 router.get('/get-all-history', async(req, res) => {
-    const result = await tokenHelper.historyToken()
-    if(result.message) {
-        console.error(logPrettier('FAILED', req.id, result.message))
-        res.status(404).json({ message : result.message })
+    try {
+        const result = await tokenHelper.historyToken()
+        console.log(logPrettier('SUCCESS', req.id, result))
+        res.status(200).json(result);
+    } catch (error) {
+        console.error(logPrettier('FAILED', req.id, error.message))
+        return res.status(404).json({ message : result.message })
     }
-    console.log(logPrettier('SUCCESS', req.id, result))
-    res.status(200).json(result);
 });
 
 router.post('/get-today-cost', checkHistoryToken, async(req, res) => {

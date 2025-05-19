@@ -5,6 +5,7 @@ import tokenRouter from './src/token_manager/tokenController.js'
 import userRouter from './src/users/userController.js'
 import requestID from 'express-request-id'
 import jwt from 'jsonwebtoken'
+import { logPrettier } from './src/log_helper/logHistory.js'
 
 const app = express();
 app.use(cors());
@@ -26,10 +27,18 @@ app.get('/', async(req, res) => {
 
 app.use("/tokenize", tokenRouter)
 app.use("/user", userRouter)
+app.use((err, req, res, next) => {
+    const statusCode =  err.statusCode || 500
+    console.log(logPrettier(`${err.status}`, req.id, err.message))
+    res.status(statusCode).json({
+        error: err.status,
+        message: err.message,
+    });
+})
 
 // Start server
 
-app.listen( () => {
+app.listen(process.env.PORT, () => {
     console.log(`Table Name : ${table_name}`)
     console.log(`Server running on port ${process.env.PORT}`);
     // console.log(`JWT_SECRET_KEY: ${process.env.JWT_SECRET_KEY}`)
